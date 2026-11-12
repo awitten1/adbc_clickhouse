@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* Added the `clickhouse.client.compression` database option to choose the transport compression:
+  `"lz4"` (the default) or `"none"`. ClickHouse compresses each query response on a single thread,
+  so `"none"` can be much faster on fast networks.
+* Implemented `Statement::execute_schema()` with `DESCRIBE (<query>)`, using the same type mapping
+  as `Connection::get_table_schema()`. Bound parameters are sent with the `DESCRIBE`.
+
+### Fixed
+
+* Map ClickHouse `Date` to Arrow `Date32` when `output_format_arrow_date_as_uint16` is `0`, the default
+  since ClickHouse 26.2, so `Connection::get_table_schema()` and `Statement::execute_schema()` match the
+  data `Statement::execute()` returns. Older servers, which always write `Date` as `UInt16`, are unchanged.
+
 ## [0.1.2] - 2026-11-06
 
 ### Fixed
